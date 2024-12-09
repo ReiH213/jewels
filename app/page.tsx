@@ -7,11 +7,13 @@ export default async function Home() {
       "Content-Type": "application/json",
     },
   });
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch data: ${response.statusText}`);
+  let result: JewelItem[] = [];
+  if (response.ok) {
+    result = await response.json();
   }
-  const result: JewelItem[] = await response.json();
+  if (!response.ok) {
+    result = [];
+  }
   return (
     <main className="w-full flex flex-col items-center h-screen overflow-x-hidden ">
       <section className="flex flex-col h-64 gap-y-10 items-center w-screen justify-center colorGradient animatedGradient">
