@@ -1,7 +1,7 @@
 import JewelsCarousel from "@/components/JewelsCarousel";
 
 export default async function Home() {
-  const response = await fetch("http://127.0.0.1:8080/items", {
+  const response = await fetch("https://jewelsback.onrender.com/items/items", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
