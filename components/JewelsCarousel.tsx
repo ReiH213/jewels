@@ -11,7 +11,6 @@ import { calcDynamicPrice } from "@/lib/utils";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { div } from "motion/react-client";
 
 const colorClassMap: { [key: string]: string } = {
   yellow: "bg-yellow-200",
