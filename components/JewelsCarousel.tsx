@@ -6,11 +6,14 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Slider } from "@/components/ui/slider";
+
 import { motion } from "motion/react";
 import { calcDynamicPrice } from "@/lib/utils";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { SliderRange, SliderThumb, SliderTrack } from "@radix-ui/react-slider";
 
 const colorClassMap: { [key: string]: string } = {
   yellow: "bg-yellow-200",
@@ -27,7 +30,7 @@ const JewelsCarousel = ({ items }: { items: JewelItem[] }) => {
     [key: string]: string;
   }>({});
   const [prices, setPrices] = useState<{ [key: string]: number }>({});
-
+  const [popularityFilter, setPopularityFilter] = useState(37);
   // Function to calculate prices
   const calculatePrices = async () => {
     const newPrices: { [key: string]: number } = {};
@@ -44,6 +47,33 @@ const JewelsCarousel = ({ items }: { items: JewelItem[] }) => {
       [itemName]: color,
     }));
   };
+  const handleChange = (event: Event, newValue: number) => {
+    setPopularityFilter(newValue);
+  };
+  const handleNewFetch = async () => {
+    let result: JewelItem[] = [];
+    try {
+      const response = await fetch(
+        `https://jewelsback.onrender.com/items?maxPopularity=${popularityFilter}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.ok) {
+        result = await response.json();
+        items = result;
+      } else {
+        console.error(
+          `Failed to fetch items: ${response.status} ${response.statusText}`
+        );
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  };
   useEffect(() => {
     calculatePrices();
   }, [items]);
@@ -59,6 +89,27 @@ const JewelsCarousel = ({ items }: { items: JewelItem[] }) => {
         transition: { duration: 3 },
       }}
     >
+      <div className="flex flex-col max-w-md">
+        <h1 className="font-semibold">Popularity Filter</h1>
+        <div className="flex flex-row gap-x-2">
+          <h1 className="font-bold">0</h1>
+          <Slider
+            max={100}
+            step={1}
+            value={[popularityFilter]}
+            onValueChange={(newValue) => setPopularityFilter(newValue[0])}
+          >
+            <SliderThumb className="w-4 h-4 bg-yellow-600 rounded-full focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+          </Slider>
+          <h1 className="font-bold">{popularityFilter}</h1>
+          <button
+            className="ml-5 p-2 rounded-lg bg-black text-white hover:bg-transparent hover:text-black hover:shadow-sm hover:shadow-yellow-300 transition-all ease-in-out delay-150"
+            onClick={handleNewFetch}
+          >
+            Filter
+          </button>
+        </div>
+      </div>
       <Carousel className="w-full-lg mt-16" opts={{ dragFree: true }}>
         <CarouselContent className="gap-x-8">
           {items.map((item: JewelItem) => {
