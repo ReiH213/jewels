@@ -47,9 +47,7 @@ const JewelsCarousel = ({ items }: { items: JewelItem[] }) => {
       [itemName]: color,
     }));
   };
-  const handleChange = (event: Event, newValue: number) => {
-    setPopularityFilter(newValue);
-  };
+
   const handleNewFetch = async () => {
     let result: JewelItem[] = [];
     try {
