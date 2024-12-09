@@ -26,6 +26,7 @@ const colors = {
 };
 const JewelsCarousel = ({ items }: { items: JewelItem[] }) => {
   // State to track the selected color for each item
+  const [selectedItems, setSelectedItems] = useState<JewelItem[]>(items);
   const [selectedColors, setSelectedColors] = useState<{
     [key: string]: string;
   }>({});
@@ -60,9 +61,10 @@ const JewelsCarousel = ({ items }: { items: JewelItem[] }) => {
           },
         }
       );
+
       if (response.ok) {
         result = await response.json();
-        items = result;
+        setSelectedItems(result);
       } else {
         console.error(
           `Failed to fetch items: ${response.status} ${response.statusText}`
@@ -110,7 +112,7 @@ const JewelsCarousel = ({ items }: { items: JewelItem[] }) => {
       </div>
       <Carousel className="w-full-lg mt-16" opts={{ dragFree: true }}>
         <CarouselContent className="gap-x-8">
-          {items.map((item: JewelItem) => {
+          {selectedItems.map((item: JewelItem) => {
             // Get the selected color or default to the first image color
             const selectedColor =
               selectedColors[item.name] || item.images[0].color;
