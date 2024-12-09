@@ -1,5 +1,6 @@
 import JewelsCarousel from "@/components/JewelsCarousel";
-export async function getServerSideProps() {
+
+export default async function Home() {
   let result: JewelItem[] = [];
   try {
     const response = await fetch("https://jewelsback.onrender.com/items", {
@@ -8,38 +9,16 @@ export async function getServerSideProps() {
         "Content-Type": "application/json",
       },
     });
-
     if (response.ok) {
       result = await response.json();
+    } else {
+      console.error(
+        `Failed to fetch items: ${response.status} ${response.statusText}`
+      );
     }
   } catch (error) {
     console.error("Fetch error:", error);
   }
-
-  return {
-    props: { items: result },
-  };
-}
-
-export default async function Home({ items }: { items: JewelItem[] }) {
-  // let result: JewelItem[] = [];
-  // try {
-  //   const response = await fetch("https://jewelsback.onrender.com/items", {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
-  //   if (response.ok) {
-  //     result = await response.json();
-  //   } else {
-  //     console.error(
-  //       `Failed to fetch items: ${response.status} ${response.statusText}`
-  //     );
-  //   }
-  // } catch (error) {
-  //   console.error("Fetch error:", error);
-  // }
   return (
     <main className="w-full flex flex-col items-center h-screen overflow-x-hidden ">
       <section className="flex flex-col h-64 gap-y-10 items-center w-screen justify-center colorGradient animatedGradient">
@@ -53,7 +32,7 @@ export default async function Home({ items }: { items: JewelItem[] }) {
       <h1 className="mt-10 text-4xl font-extrabold text-gray-400">
         Take a look at our most popular products
       </h1>
-      <JewelsCarousel items={items} />
+      <JewelsCarousel items={result} />
     </main>
   );
 }
