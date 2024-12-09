@@ -1,18 +1,23 @@
 import JewelsCarousel from "@/components/JewelsCarousel";
 
 export default async function Home() {
-  const response = await fetch("https://jewelsback.onrender.com/items", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
   let result: JewelItem[] = [];
-  if (response.ok) {
-    result = await response.json();
-  }
-  if (!response.ok) {
-    result = [];
+  try {
+    const response = await fetch("https://jewelsback.onrender.com/items", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.ok) {
+      result = await response.json();
+    } else {
+      console.error(
+        `Failed to fetch items: ${response.status} ${response.statusText}`
+      );
+    }
+  } catch (error) {
+    console.error("Fetch error:", error);
   }
   return (
     <main className="w-full flex flex-col items-center h-screen overflow-x-hidden ">
